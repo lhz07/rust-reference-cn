@@ -1,47 +1,44 @@
 r[type]
-# Types
+# 类型
 
 r[type.intro]
-Every variable, item, and value in a Rust program has a type. The _type_ of a
-*value* defines the interpretation of the memory holding it and the operations
-that may be performed on the value.
+Rust 程序中的每个变量、条目和值都有一个类型。*值*的_类型_定义了保存它的内存的解释以及可以对该值执行的操作。
 
 r[type.builtin]
-Built-in types are tightly integrated into the language, in nontrivial ways
-that are not possible to emulate in user-defined types.
+内置类型以非平凡的方式紧密集成到语言中，这是用户定义类型无法模拟的。
 
 r[type.user-defined]
-User-defined types have limited capabilities.
+用户定义的类型具有有限的功能。
 
 r[type.kinds]
-The list of types is:
+类型列表如下：
 
-* Primitive types:
-    * [Boolean] --- `bool`
-    * [Numeric] --- integer and float
-    * [Textual] --- `char` and `str`
-    * [Never] --- `!` --- a type with no values
-* Sequence types:
-    * [Tuple]
-    * [Array]
-    * [Slice]
-* User-defined types:
-    * [Struct]
-    * [Enum]
-    * [Union]
-* Function types:
-    * [Functions]
-    * [Closures]
-* Pointer types:
-    * [References]
-    * [Raw pointers]
-    * [Function pointers]
-* Trait types:
-    * [Trait objects]
+* 基本类型：
+    * [布尔][Boolean] --- `bool`
+    * [数值][Numeric] --- 整数和浮点数
+    * [文本][Textual] --- `char` 和 `str`
+    * [Never] --- `!` --- 没有值的类型
+* 序列类型：
+    * [元组][Tuple]
+    * [数组][Array]
+    * [切片][Slice]
+* 用户定义类型：
+    * [结构体][Struct]
+    * [枚举][Enum]
+    * [联合体][Union]
+* 函数类型：
+    * [函数][Functions]
+    * [闭包][Closures]
+* 指针类型：
+    * [引用][References]
+    * [原始指针][Raw pointers]
+    * [函数指针][Function pointers]
+* 特征类型：
+    * [特征对象][Trait objects]
     * [Impl trait]
 
 r[type.name]
-## Type expressions
+## 类型表达式
 
 r[type.name.syntax]
 ```grammar,types
@@ -68,39 +65,38 @@ TypeNoBounds ->
 ```
 
 r[type.name.intro]
-A _type expression_ as defined in the [Type] grammar rule above is the syntax
-for referring to a type. It may refer to:
+上面 [Type] 语法规则中定义的_类型表达式_是引用类型的语法。它可以引用：
 
 r[type.name.sequence]
-* Sequence types ([tuple], [array], [slice]).
+* 序列类型（[元组][tuple]、[数组][array]、[切片][slice]）。
 
 r[type.name.path]
-* [Type paths] which can reference:
-    * Primitive types ([boolean], [numeric], [textual]).
-    * Paths to an [item] ([struct], [enum], [union], [type alias], [trait]).
-    * [`Self` path] where `Self` is the implementing type.
-    * Generic [type parameters].
+* [类型路径][Type paths]，可以引用：
+    * 基本类型（[布尔][boolean]、[数值][numeric]、[文本][textual]）。
+    * 指向[条目][item]的路径（[结构体][struct]、[枚举][enum]、[联合体][union]、[类型别名][type alias]、[特征][trait]）。
+    * [`Self` 路径][`Self` path]，其中 `Self` 是实现类型。
+    * 泛型[类型参数][type parameters]。
 
 r[type.name.pointer]
-* Pointer types ([reference], [raw pointer], [function pointer]).
+* 指针类型（[引用][reference]、[原始指针][raw pointer]、[函数指针][function pointer]）。
 
 r[type.name.inference]
-* The [inferred type] which asks the compiler to determine the type.
+* [推断类型][inferred type]，要求编译器确定类型。
 
 r[type.name.grouped]
-* [Parentheses] which are used for disambiguation.
+* [括号][Parentheses]，用于消除歧义。
 
 r[type.name.trait]
-* Trait types: [Trait objects] and [impl trait].
+* 特征类型：[特征对象][Trait objects]和 [impl trait]。
 
 r[type.name.never]
-* The [never] type.
+* [never] 类型。
 
 r[type.name.macro-expansion]
-* [Macros] which expand to a type expression.
+* [宏][Macros]，扩展为类型表达式。
 
 r[type.name.parenthesized]
-### Parenthesized types
+### 括号类型
 
 r[type.name.parenthesized.syntax]
 ```grammar,types
@@ -108,12 +104,7 @@ ParenthesizedType -> `(` Type `)`
 ```
 
 r[type.name.parenthesized.intro]
-In some situations the combination of types may be ambiguous. Use parentheses
-around a type to avoid ambiguity. For example, the `+` operator for [type
-boundaries] within a [reference type] is unclear where the
-boundary applies, so the use of parentheses is required. Grammar rules that
-require this disambiguation use the [TypeNoBounds] rule instead of
-[Type][grammar-Type].
+在某些情况下，类型的组合可能不明确。在类型周围使用括号以避免歧义。例如，[引用类型][reference type]中[类型边界][type boundaries]的 `+` 运算符不清楚边界应用的位置，因此需要使用括号。需要这种消歧的语法规则使用 [TypeNoBounds] 规则而不是 [Type][grammar-Type]。
 
 ```rust
 # use std::any::Any;
@@ -121,24 +112,18 @@ type T<'a> = &'a (dyn Any + Send);
 ```
 
 r[type.recursive]
-## Recursive types
+## 递归类型
 
 r[type.recursive.intro]
-Nominal types &mdash; [structs], [enumerations], and [unions] &mdash; may be
-recursive. That is, each `enum` variant or `struct` or `union` field may
-refer, directly or indirectly, to the enclosing `enum` or `struct` type
-itself.
+命名类型 &mdash; [结构体][structs]、[枚举][enumerations]和[联合体][unions] &mdash; 可以是递归的。也就是说，每个 `enum` 变体或 `struct` 或 `union` 字段可以直接或间接地引用封闭的 `enum` 或 `struct` 类型本身。
 
 r[type.recursive.constraint]
-Such recursion has restrictions:
+这种递归有限制：
 
-* Recursive types must include a nominal type in the recursion (not mere [type
-  aliases], or other structural types such as [arrays] or [tuples]). So `type
-  Rec = &'static [Rec]` is not allowed.
-* The size of a recursive type must be finite; in other words the recursive
-  fields of the type must be [pointer types].
+* 递归类型必须在递归中包含命名类型（不仅仅是[类型别名][type aliases]，或其他结构类型，如[数组][arrays]或[元组][tuples]）。所以 `type Rec = &'static [Rec]` 是不允许的。
+* 递归类型的大小必须是有限的；换句话说，类型的递归字段必须是[指针类型][pointer types]。
 
-An example of a *recursive* type and its use:
+一个*递归*类型及其使用的示例：
 
 ```rust
 enum List<T> {
