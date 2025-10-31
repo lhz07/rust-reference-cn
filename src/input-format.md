@@ -1,47 +1,47 @@
 r[input]
-# Input format
+# 输入格式
 
 r[input.syntax]
 ```grammar,lexer
-@root CHAR -> <a Unicode scalar value>
+@root CHAR -> <一个 Unicode 标量值>
 
 NUL -> U+0000
 ```
 
 r[input.intro]
-This chapter describes how a source file is interpreted as a sequence of tokens.
+本章描述源文件如何被解释为一系列词法单元。
 
-See [Crates and source files] for a description of how programs are organised into files.
+有关程序如何组织到文件中的描述，请参阅[包和源文件][Crates and source files]。
 
 r[input.encoding]
-## Source encoding
+## 源编码
 
 r[input.encoding.utf8]
-Each source file is interpreted as a sequence of Unicode characters encoded in UTF-8.
+每个源文件都被解释为以 UTF-8 编码的 Unicode 字符序列。
 
 r[input.encoding.invalid]
-It is an error if the file is not valid UTF-8.
+如果文件不是有效的 UTF-8，则会出错。
 
 r[input.byte-order-mark]
-## Byte order mark removal
+## 字节顺序标记删除
 
-If the first character in the sequence is `U+FEFF` ([BYTE ORDER MARK]), it is removed.
+如果序列中的第一个字符是 `U+FEFF`（[字节顺序标记][BYTE ORDER MARK]），则将其删除。
 
 r[input.crlf]
-## CRLF normalization
+## CRLF 规范化
 
-Each pair of characters `U+000D` (CR) immediately followed by `U+000A` (LF) is replaced by a single `U+000A` (LF).
-This happens once, not repeatedly, so after the normalization, there can still exist `U+000D` (CR) immediately followed by `U+000A` (LF) in the input (e.g. if the raw input contained "CR CR LF LF").
+每对字符 `U+000D` (CR) 紧跟 `U+000A` (LF) 将被替换为单个 `U+000A` (LF)。
+这只发生一次，而不是重复发生，因此规范化后，输入中仍可能存在 `U+000D` (CR) 紧跟 `U+000A` (LF)（例如，如果原始输入包含"CR CR LF LF"）。
 
-Other occurrences of the character `U+000D` (CR) are left in place (they are treated as [whitespace]).
+字符 `U+000D` (CR) 的其他出现保留在原位（它们被视为[空白符][whitespace]）。
 
 r[input.shebang]
-## Shebang removal
+## Shebang 删除
 
 r[input.shebang.intro]
-If the remaining sequence begins with the characters `#!`, the characters up to and including the first `U+000A` (LF) are removed from the sequence.
+如果剩余序列以字符 `#!` 开头，则从序列中删除直到并包括第一个 `U+000A` (LF) 的字符。
 
-For example, the first line of the following file would be ignored:
+例如，以下文件的第一行将被忽略：
 
 <!-- ignore: tests don't like shebang -->
 ```rust,ignore
@@ -53,16 +53,16 @@ fn main() {
 ```
 
 r[input.shebang.inner-attribute]
-As an exception, if the `#!` characters are followed (ignoring intervening [comments] or [whitespace]) by a `[` token, nothing is removed.
-This prevents an [inner attribute] at the start of a source file being removed.
+作为例外，如果 `#!` 字符后跟（忽略中间的[注释][comments]或[空白符][whitespace]）`[` 词法单元，则不会删除任何内容。
+这防止删除源文件开头的[内部属性][inner attribute]。
 
 > [!NOTE]
-> The standard library [`include!`] macro applies byte order mark removal, CRLF normalization, and shebang removal to the file it reads. The [`include_str!`] and [`include_bytes!`] macros do not.
+> 标准库 [`include!`] 宏对其读取的文件应用字节顺序标记删除、CRLF 规范化和 shebang 删除。[`include_str!`] 和 [`include_bytes!`] 宏不会。
 
 r[input.tokenization]
-## Tokenization
+## 词法单元化
 
-The resulting sequence of characters is then converted into tokens as described in the remainder of this chapter.
+然后，将得到的字符序列转换为词法单元，如本章其余部分所述。
 
 [inner attribute]: attributes.md
 [BYTE ORDER MARK]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
