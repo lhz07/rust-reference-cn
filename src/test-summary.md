@@ -1,5 +1,5 @@
-# Test summary
+# 测试摘要
 
-The following is a summary of the total tests that are linked to individual rule identifiers within the reference.
+以下是链接到参考手册中各个规则标识符的测试总数摘要。
 
 {{summary-table}}
