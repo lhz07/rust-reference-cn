@@ -1,5 +1,5 @@
 r[attributes]
-# Attributes
+# 属性
 
 r[attributes.syntax]
 ```grammar,attributes
@@ -17,19 +17,18 @@ AttrInput ->
 ```
 
 r[attributes.intro]
-An _attribute_ is a general, free-form metadatum that is interpreted according
-to name, convention, language, and compiler version. Attributes are modeled
-on Attributes in [ECMA-335], with the syntax coming from [ECMA-334] \(C#).
+_属性（attribute）_ 是一种通用的、自由形式的元数据，根据名称、约定、语言和编译器版本进行解释。
+属性的建模基于 [ECMA-335] 中的 Attributes，语法来自 [ECMA-334]（C#）。
 
 r[attributes.inner]
-_Inner attributes_, written with a bang (`!`) after the hash (`#`), apply to the form that the attribute is declared within.
+_内部属性（Inner attributes）_，在井号（`#`）后面加感叹号（`!`），应用于声明该属性的形式内部。
 
 > [!EXAMPLE]
 > ```rust
-> // General metadata applied to the enclosing module or crate.
+> // 应用于包含的模块或 crate 的通用元数据。
 > #![crate_type = "lib"]
 >
-> // Inner attribute applies to the entire function.
+> // 内部属性应用于整个函数。
 > fn some_unused_variables() {
 >   #![allow(unused_variables)]
 >
@@ -40,41 +39,37 @@ _Inner attributes_, written with a bang (`!`) after the hash (`#`), apply to the
 > ```
 
 r[attributes.outer]
-_Outer attributes_, written without the bang after the hash, apply to the form that follows the attribute.
+_外部属性（Outer attributes）_，在井号后面不加感叹号，应用于紧随该属性之后的形式。
 
 > [!EXAMPLE]
 > ```rust
-> // A function marked as a unit test
+> // 标记为单元测试的函数
 > #[test]
 > fn test_foo() {
 >     /* ... */
 > }
 >
-> // A conditionally-compiled module
+> // 条件编译的模块
 > #[cfg(target_os = "linux")]
 > mod bar {
 >     /* ... */
 > }
 >
-> // A lint attribute used to suppress a warning/error
+> // 用于抑制警告/错误的 lint 属性
 > #[allow(non_camel_case_types)]
 > type int8_t = i8;
 > ```
 
 r[attributes.input]
-The attribute consists of a path to the attribute, followed by an optional
-delimited token tree whose interpretation is defined by the attribute.
-Attributes other than macro attributes also allow the input to be an equals
-sign (`=`) followed by an expression. See the [meta item
-syntax](#meta-item-attribute-syntax) below for more details.
+属性由指向该属性的路径组成，后面跟一个可选的界定标记树，其解释由属性定义。
+除宏属性外的属性还允许输入为等号（`=`）后跟一个表达式。
+有关详细信息，请参见下面的[元项语法](#meta-item-attribute-syntax)。
 
 r[attributes.safety]
-An attribute may be unsafe to apply. To avoid undefined behavior when using
-these attributes, certain obligations that cannot be checked by the compiler
-must be met.  To assert these have been, the attribute is wrapped in
-`unsafe(..)`, e.g. `#[unsafe(no_mangle)]`.
+属性可能在应用时是不安全的。为了在使用这些属性时避免未定义行为，必须满足某些编译器无法检查的约束。
+为了断言这些约束已满足，属性需要包装在 `unsafe(..)`中，例如 `#[unsafe(no_mangle)]`。
 
-The following attributes are unsafe:
+以下属性是不安全的：
 
 * [`export_name`]
 * [`link_section`]
@@ -82,38 +77,33 @@ The following attributes are unsafe:
 * [`no_mangle`]
 
 r[attributes.kind]
-Attributes can be classified into the following kinds:
+属性可以分为以下几类：
 
-* [Built-in attributes]
-* [Proc macro attributes][attribute macros]
-* [Derive macro helper attributes]
-* [Tool attributes](#tool-attributes)
+* [内置属性][Built-in attributes]
+* [过程宏属性][attribute macros]
+* [派生宏辅助属性][Derive macro helper attributes]
+* [工具属性](#tool-attributes)
 
 r[attributes.allowed-position]
-Attributes may be applied to many forms in the language:
+属性可以应用于语言中的多种形式：
 
-* All [item declarations] accept outer attributes while [external blocks],
-  [functions], [implementations], and [modules] accept inner attributes.
-* Most [statements] accept outer attributes (see [Expression Attributes] for
-  limitations on expression statements).
-* [Block expressions] accept outer and inner attributes, but only when they are
-  the outer expression of an [expression statement] or the final expression of
-  another block expression.
-* [Enum] variants and [struct] and [union] fields accept outer attributes.
-* [Match expression arms][match expressions] accept outer attributes.
-* [Generic lifetime or type parameter][generics] accept outer attributes.
-* Expressions accept outer attributes in limited situations, see [Expression
-  Attributes] for details.
-* [Function][functions], [closure] and [function pointer]
-  parameters accept outer attributes. This includes attributes on variadic parameters
-  denoted with `...` in function pointers and [external blocks][variadic functions].
+* 所有[条目声明][item declarations]都接受外部属性，而[外部块][external blocks]、
+  [函数][functions]、[实现][implementations]和[模块][modules]都接受内部属性。
+* 大多数[语句][statements]都接受外部属性（关于表达式语句的限制，请参阅[表达式属性][Expression Attributes]）。
+* [块表达式][Block expressions]接受外部和内部属性，但仅当它们是[表达式语句][expression statement]的外部表达式或
+  另一个块表达式的最终表达式时。
+* [枚举][Enum]变体、[结构体][struct]和[联合体][union]字段接受外部属性。
+* [匹配表达式分支][match expressions]接受外部属性。
+* [泛型生命周期或类型参数][generics]接受外部属性。
+* 表达式在受限情况下接受外部属性，详细信息请参阅[表达式属性][Expression Attributes]。
+* [函数][functions]、[闭包][closure]和[函数指针][function pointer]
+  参数接受外部属性。这包括在函数指针和[外部块][variadic functions]中使用 `...` 表示的可变参数的属性。
 
 r[attributes.meta]
-## Meta item attribute syntax
+## 元项属性语法
 
 r[attributes.meta.intro]
-A "meta item" is the syntax used for the [Attr] rule by most [built-in
-attributes]. It has the following grammar:
+"元项"是大多数[内置属性][built-in attributes]的 [Attr] 规则使用的语法。它具有以下语法：
 
 r[attributes.meta.syntax]
 ```grammar,attributes
@@ -131,15 +121,12 @@ MetaItemInner ->
 ```
 
 r[attributes.meta.literal-expr]
-Expressions in meta items must macro-expand to literal expressions, which must not
-include integer or float type suffixes. Expressions which are not literal expressions
-will be syntactically accepted (and can be passed to proc-macros), but will be rejected after parsing.
+元项中的表达式必须在宏展开后变成字面量表达式，且不能包含整数或浮点类型后缀。
+非字面量表达式将在语法上被接受（并可以传递给过程宏），但在解析后会被拒绝。
 
 r[attributes.meta.order]
-Note that if the attribute appears within another macro, it will be expanded
-after that outer macro. For example, the following code will expand the
-`Serialize` proc-macro first, which must preserve the `include_str!` call in
-order for it to be expanded:
+请注意，如果属性出现在另一个宏内部，它将在那个外部宏之后展开。例如，以下代码将首先展开
+`Serialize` 过程宏，该宏必须保留 `include_str!` 调用以便其能够被展开：
 
 ```rust ignore
 #[derive(Serialize)]
@@ -150,20 +137,19 @@ struct Foo {
 ```
 
 r[attributes.meta.order-macro]
-Additionally, macros in attributes will be expanded only after all other attributes applied to the item:
+此外，属性中的宏只会在应用于条目的所有其他属性之后展开：
 
 ```rust ignore
-#[macro_attr1] // expanded first
-#[doc = mac!()] // `mac!` is expanded fourth.
-#[macro_attr2] // expanded second
-#[derive(MacroDerive1, MacroDerive2)] // expanded third
+#[macro_attr1] // 首先展开
+#[doc = mac!()] // `mac!` 第四个展开。
+#[macro_attr2] // 第二个展开
+#[derive(MacroDerive1, MacroDerive2)] // 第三个展开
 fn foo() {}
 ```
 
 r[attributes.meta.builtin]
-Various built-in attributes use different subsets of the meta item syntax to
-specify their inputs. The following grammar rules show some commonly used
-forms:
+各种内置属性使用元项语法的不同子集来指定它们的输入。
+以下语法规则展示了一些常用形式：
 
 r[attributes.meta.builtin.syntax]
 ```grammar,attributes
@@ -183,9 +169,9 @@ MetaNameValueStr ->
     IDENTIFIER `(` ( MetaNameValueStr (`,` MetaNameValueStr)* `,`? )? `)`
 ```
 
-Some examples of meta items are:
+元项的一些示例如下：
 
-Style | Example
+样式 | 示例
 ------|--------
 [MetaWord] | `no_std`
 [MetaNameValueStr] | `doc = "example"`
@@ -194,143 +180,127 @@ Style | Example
 [MetaListNameValueStr] | `link(name = "CoreFoundation", kind = "framework")`
 
 r[attributes.activity]
-## Active and inert attributes
+## 活动属性和惰性属性
 
 r[attributes.activity.intro]
-An attribute is either active or inert. During attribute processing, *active
-attributes* remove themselves from the form they are on while *inert attributes*
-stay on.
+属性要么是活动的，要么是惰性的。在属性处理期间，*活动属性*会从它们所在的形式中移除自身，
+而*惰性属性*则保持不变。
 
-The [`cfg`] and [`cfg_attr`] attributes are active.
-[Attribute macros] are active. All other attributes are inert.
+[`cfg`] 和 [`cfg_attr`] 属性是活动的。
+[属性宏][Attribute macros]是活动的。所有其他属性都是惰性的。
 
 r[attributes.tool]
-## Tool attributes
+## 工具属性
 
 r[attributes.tool.intro]
-The compiler may allow attributes for external tools where each tool resides
-in its own module in the [tool prelude]. The first segment of the attribute
-path is the name of the tool, with one or more additional segments whose
-interpretation is up to the tool.
+编译器可能允许外部工具的属性，其中每个工具都位于[工具前导][tool prelude]中自己的模块中。
+属性路径的第一段是工具的名称，后面可以有一个或多个附加段，其解释取决于工具。
 
 r[attributes.tool.ignored]
-When a tool is not in use, the tool's attributes are accepted without a
-warning. When the tool is in use, the tool is responsible for processing and
-interpretation of its attributes.
+当工具未使用时，工具的属性将被接受而不会发出警告。
+当工具正在使用时，工具负责处理和解释其属性。
 
 r[attributes.tool.prelude]
-Tool attributes are not available if the [`no_implicit_prelude`] attribute is
-used.
+如果使用了 [`no_implicit_prelude`] 属性，则工具属性不可用。
 
 ```rust
-// Tells the rustfmt tool to not format the following element.
+// 告诉 rustfmt 工具不要格式化以下元素。
 #[rustfmt::skip]
 struct S {
 }
 
-// Controls the "cyclomatic complexity" threshold for the clippy tool.
+// 控制 clippy 工具的"圈复杂度"阈值。
 #[clippy::cyclomatic_complexity = "100"]
 pub fn f() {}
 ```
 
 > [!NOTE]
-> `rustc` currently recognizes the tools "clippy", "rustfmt", "diagnostic", "miri" and "rust_analyzer".
+> `rustc` 当前识别的工具有 "clippy"、"rustfmt"、"diagnostic"、"miri" 和 "rust_analyzer"。
 
 r[attributes.builtin]
-## Built-in attributes index
+## 内置属性索引
 
-The following is an index of all built-in attributes.
+以下是所有内置属性的索引。
 
-- Conditional compilation
-  - [`cfg`] --- Controls conditional compilation.
-  - [`cfg_attr`] --- Conditionally includes attributes.
+- 条件编译
+  - [`cfg`] --- 控制条件编译。
+  - [`cfg_attr`] --- 有条件地包含属性。
 
-- Testing
-  - [`test`] --- Marks a function as a test.
-  - [`ignore`] --- Disables a test function.
-  - [`should_panic`] --- Indicates a test should generate a panic.
+- 测试
+  - [`test`] --- 将函数标记为测试。
+  - [`ignore`] --- 禁用测试函数。
+  - [`should_panic`] --- 表示测试应该产生 panic。
 
-- Derive
-  - [`derive`] --- Automatic trait implementations.
-  - [`automatically_derived`] --- Marker for implementations created by
-    `derive`.
+- 派生
+  - [`derive`] --- 自动 trait 实现。
+  - [`automatically_derived`] --- `derive` 创建的实现的标记。
 
-- Macros
-  - [`macro_export`] --- Exports a `macro_rules` macro for cross-crate usage.
-  - [`macro_use`] --- Expands macro visibility, or imports macros from other
-    crates.
-  - [`proc_macro`] --- Defines a function-like macro.
-  - [`proc_macro_derive`] --- Defines a derive macro.
-  - [`proc_macro_attribute`] --- Defines an attribute macro.
+- 宏
+  - [`macro_export`] --- 导出 `macro_rules` 宏供跨 crate 使用。
+  - [`macro_use`] --- 扩展宏可见性，或从其他 crate 导入宏。
+  - [`proc_macro`] --- 定义类函数宏。
+  - [`proc_macro_derive`] --- 定义派生宏。
+  - [`proc_macro_attribute`] --- 定义属性宏。
 
-- Diagnostics
-  - [`allow`], [`expect`], [`warn`], [`deny`], [`forbid`] --- Alters the default lint level.
-  - [`deprecated`] --- Generates deprecation notices.
-  - [`must_use`] --- Generates a lint for unused values.
-  - [`diagnostic::on_unimplemented`] --- Hints the compiler to emit a certain error
-    message if a trait is not implemented.
-  - [`diagnostic::do_not_recommend`] --- Hints the compiler to not show a certain trait impl in error messages.
+- 诊断
+  - [`allow`]、[`expect`]、[`warn`]、[`deny`]、[`forbid`] --- 改变默认 lint 级别。
+  - [`deprecated`] --- 生成弃用通知。
+  - [`must_use`] --- 为未使用的值生成 lint。
+  - [`diagnostic::on_unimplemented`] --- 提示编译器在未实现 trait 时发出特定错误消息。
+  - [`diagnostic::do_not_recommend`] --- 提示编译器在错误消息中不显示某个 trait impl。
 
-- ABI, linking, symbols, and FFI
-  - [`link`] --- Specifies a native library to link with an `extern` block.
-  - [`link_name`] --- Specifies the name of the symbol for functions or statics
-    in an `extern` block.
-  - [`link_ordinal`] --- Specifies the ordinal of the symbol for functions or
-    statics in an `extern` block.
-  - [`no_link`] --- Prevents linking an extern crate.
-  - [`repr`] --- Controls type layout.
-  - [`crate_type`] --- Specifies the type of crate (library, executable, etc.).
-  - [`no_main`] --- Disables emitting the `main` symbol.
-  - [`export_name`] --- Specifies the exported symbol name for a function or
-    static.
-  - [`link_section`] --- Specifies the section of an object file to use for a
-    function or static.
-  - [`no_mangle`] --- Disables symbol name encoding.
-  - [`used`] --- Forces the compiler to keep a static item in the output
-    object file.
-  - [`crate_name`] --- Specifies the crate name.
+- ABI、链接、符号和 FFI
+  - [`link`] --- 指定要与 `extern` 块链接的本地库。
+  - [`link_name`] --- 指定 `extern` 块中函数或静态项的符号名称。
+  - [`link_ordinal`] --- 指定 `extern` 块中函数或静态项的符号序数。
+  - [`no_link`] --- 防止链接外部 crate。
+  - [`repr`] --- 控制类型布局。
+  - [`crate_type`] --- 指定 crate 类型（库、可执行文件等）。
+  - [`no_main`] --- 禁用发出 `main` 符号。
+  - [`export_name`] --- 指定函数或静态项的导出符号名称。
+  - [`link_section`] --- 指定用于函数或静态项的目标文件段。
+  - [`no_mangle`] --- 禁用符号名称编码。
+  - [`used`] --- 强制编译器在输出目标文件中保留静态项。
+  - [`crate_name`] --- 指定 crate 名称。
 
-- Code generation
-  - [`inline`] --- Hint to inline code.
-  - [`cold`] --- Hint that a function is unlikely to be called.
-  - [`naked`] --- Prevent the compiler from emitting a function prologue and epilogue.
-  - [`no_builtins`] --- Disables use of certain built-in functions.
-  - [`target_feature`] --- Configure platform-specific code generation.
-  - [`track_caller`] --- Pass the parent call location to `std::panic::Location::caller()`.
-  - [`instruction_set`] --- Specify the instruction set used to generate a functions code
+- 代码生成
+  - [`inline`] --- 内联代码的提示。
+  - [`cold`] --- 提示函数不太可能被调用。
+  - [`naked`] --- 防止编译器发出函数序言和尾声。
+  - [`no_builtins`] --- 禁用某些内置函数的使用。
+  - [`target_feature`] --- 配置平台特定的代码生成。
+  - [`track_caller`] --- 将父调用位置传递给 `std::panic::Location::caller()`。
+  - [`instruction_set`] --- 指定用于生成函数代码的指令集。
 
-- Documentation
-  - `doc` --- Specifies documentation. See [The Rustdoc Book] for more
-    information. [Doc comments] are transformed into `doc` attributes.
+- 文档
+  - `doc` --- 指定文档。更多信息请参见 [The Rustdoc Book]。[文档注释][Doc comments]会被转换为 `doc` 属性。
 
-- Preludes
-  - [`no_std`] --- Removes std from the prelude.
-  - [`no_implicit_prelude`] --- Disables prelude lookups within a module.
+- 前导
+  - [`no_std`] --- 从前导中移除 std。
+  - [`no_implicit_prelude`] --- 禁用模块内的前导查找。
 
-- Modules
-  - [`path`] --- Specifies the filename for a module.
+- 模块
+  - [`path`] --- 指定模块的文件名。
 
-- Limits
-  - [`recursion_limit`] --- Sets the maximum recursion limit for certain
-    compile-time operations.
-  - [`type_length_limit`] --- Sets the maximum size of a polymorphic type.
+- 限制
+  - [`recursion_limit`] --- 设置某些编译时操作的最大递归限制。
+  - [`type_length_limit`] --- 设置多态类型的最大大小。
 
-- Runtime
-  - [`panic_handler`] --- Sets the function to handle panics.
-  - [`global_allocator`] --- Sets the global memory allocator.
-  - [`windows_subsystem`] --- Specifies the windows subsystem to link with.
+- 运行时
+  - [`panic_handler`] --- 设置处理 panic 的函数。
+  - [`global_allocator`] --- 设置全局内存分配器。
+  - [`windows_subsystem`] --- 指定要链接的 Windows 子系统。
 
-- Features
-  - `feature` --- Used to enable unstable or experimental compiler features. See
-    [The Unstable Book] for features implemented in `rustc`.
+- 功能
+  - `feature` --- 用于启用不稳定或实验性编译器功能。有关在 `rustc` 中实现的功能，
+    请参见 [The Unstable Book]。
 
-- Type System
-  - [`non_exhaustive`] --- Indicate that a type will have more fields/variants
-    added in future.
+- 类型系统
+  - [`non_exhaustive`] --- 表明类型将来会添加更多字段/变体。
 
-- Debugger
-  - [`debugger_visualizer`] --- Embeds a file that specifies debugger output for a type.
-  - [`collapse_debuginfo`] --- Controls how macro invocations are encoded in debuginfo.
+- 调试器
+  - [`debugger_visualizer`] --- 嵌入指定类型调试器输出的文件。
+  - [`collapse_debuginfo`] --- 控制如何在调试信息中编码宏调用。
 
 [Doc comments]: comments.md#doc-comments
 [ECMA-334]: https://www.ecma-international.org/publications-and-standards/standards/ecma-334/
