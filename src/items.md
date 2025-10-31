@@ -1,5 +1,5 @@
 r[items]
-# Items
+# 条目
 
 r[items.syntax]
 ```grammar,items
@@ -30,48 +30,44 @@ MacroItem ->
 ```
 
 r[items.intro]
-An _item_ is a component of a crate. Items are organized within a crate by a
-nested set of [modules]. Every crate has a single "outermost" anonymous module;
-all further items within the crate have [paths] within the module tree of the
-crate.
+_条目_是包的组成部分。条目在包内通过嵌套的[模块][modules]集合组织。每个包都有一个"最外层"的匿名模块；包内的所有其他条目在包的模块树中都有[路径][paths]。
 
 r[items.static-def]
-Items are entirely determined at compile-time, generally remain fixed during
-execution, and may reside in read-only memory.
+条目在编译时完全确定，在执行期间通常保持固定，并且可能驻留在只读内存中。
 
 r[items.kinds]
-There are several kinds of items:
+有几种条目：
 
-* [modules]
-* [`extern crate` declarations]
-* [`use` declarations]
-* [function definitions]
-* [type definitions]
-* [struct definitions]
-* [enumeration definitions]
-* [union definitions]
-* [constant items]
-* [static items]
-* [trait definitions]
-* [implementations]
-* [`extern` blocks]
+* [模块][modules]
+* [`extern crate` 声明][`extern crate` declarations]
+* [`use` 声明][`use` declarations]
+* [函数定义][function definitions]
+* [类型定义][type definitions]
+* [结构体定义][struct definitions]
+* [枚举定义][enumeration definitions]
+* [联合体定义][union definitions]
+* [常量项][constant items]
+* [静态项][static items]
+* [特征定义][trait definitions]
+* [实现][implementations]
+* [`extern` 块][`extern` blocks]
 
 r[items.locations]
-Items may be declared in the [root of the crate], a [module][modules], or a [block expression].
+条目可以在[包的根][root of the crate]、[模块][modules]或[块表达式][block expression]中声明。
 
 r[items.associated-locations]
-A subset of items, called [associated items], may be declared in [traits] and [implementations].
+称为[关联项][associated items]的条目子集可以在[特征][traits]和[实现][implementations]中声明。
 
 r[items.extern-locations]
-A subset of items, called external items, may be declared in [`extern` blocks].
+称为外部项的条目子集可以在 [`extern` 块][`extern` blocks]中声明。
 
 r[items.decl-order]
-Items may be defined in any order, with the exception of [`macro_rules`] which has its own scoping behavior.
+条目可以按任何顺序定义，除了 [`macro_rules`]，它有自己的作用域行为。
 
 r[items.name-resolution]
-[Name resolution] of item names allows items to be defined before or after where the item is referred to in the module or block.
+条目名称的[名称解析][Name resolution]允许在模块或块中引用条目之前或之后定义条目。
 
-See [item scopes] for information on the scoping rules of items.
+有关条目的作用域规则的信息，请参阅[条目作用域][item scopes]。
 
 [`extern crate` declarations]: items/extern-crates.md
 [`extern` blocks]: items/external-blocks.md

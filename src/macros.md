@@ -1,19 +1,16 @@
 r[macro]
-# Macros
+# 宏
 
 r[macro.intro]
-The functionality and syntax of Rust can be extended with custom definitions
-called macros. They are given names, and invoked through a consistent
-syntax: `some_extension!(...)`.
+Rust 的功能和语法可以使用称为宏的自定义定义进行扩展。它们被赋予名称，并通过一致的语法调用：`some_extension!(...)`。
 
-There are two ways to define new macros:
+有两种方法可以定义新宏：
 
-* [Macros by Example] define new syntax in a higher-level, declarative way.
-* [Procedural Macros] define function-like macros, custom derives, and custom
-  attributes using functions that operate on input tokens.
+* [示例宏][Macros by Example]以更高级、声明性的方式定义新语法。
+* [过程宏][Procedural Macros]使用对输入词法单元进行操作的函数定义类似函数的宏、自定义派生和自定义属性。
 
 r[macro.invocation]
-## Macro invocation
+## 宏调用
 
 r[macro.invocation.syntax]
 ```grammar,macros
@@ -26,7 +23,7 @@ DelimTokenTree ->
     | `{` TokenTree* `}`
 
 TokenTree ->
-    Token _except [delimiters][lex.token.delim]_ | DelimTokenTree
+    Token _除了[分隔符][lex.token.delim]_ | DelimTokenTree
 
 MacroInvocationSemi ->
       SimplePath `!` `(` TokenTree* `)` `;`
@@ -35,42 +32,38 @@ MacroInvocationSemi ->
 ```
 
 r[macro.invocation.intro]
-A macro invocation expands a macro at compile time and replaces the
-invocation with the result of the macro. Macros may be invoked in the
-following situations:
+宏调用在编译时扩展宏，并将调用替换为宏的结果。宏可以在以下情况下调用：
 
 r[macro.invocation.expr]
-* [Expressions] and [statements]
+* [表达式][Expressions]和[语句][statements]
 
 r[macro.invocation.pattern]
-* [Patterns]
+* [模式][Patterns]
 
 r[macro.invocation.type]
-* [Types]
+* [类型][Types]
 
 r[macro.invocation.item]
-* [Items] including [associated items]
+* [条目][Items]，包括[关联项][associated items]
 
 r[macro.invocation.nested]
-* [`macro_rules`] transcribers
+* [`macro_rules`] 转录器
 
 r[macro.invocation.extern]
-* [External blocks]
+* [外部块][External blocks]
 
 r[macro.invocation.item-statement]
-When used as an item or a statement, the [MacroInvocationSemi] form is used
-where a semicolon is required at the end when not using curly braces.
-[Visibility qualifiers] are never allowed before a macro invocation or
-[`macro_rules`] definition.
+当用作条目或语句时，使用 [MacroInvocationSemi] 形式，在不使用花括号时末尾需要分号。
+[可见性限定符][Visibility qualifiers]永远不允许出现在宏调用或 [`macro_rules`] 定义之前。
 
 ```rust
-// Used as an expression.
+// 用作表达式。
 let x = vec![1,2,3];
 
-// Used as a statement.
+// 用作语句。
 println!("Hello!");
 
-// Used in a pattern.
+// 用在模式中。
 macro_rules! pat {
     ($i:ident) => (Some($i))
 }
@@ -79,18 +72,18 @@ if let pat!(x) = Some(1) {
     assert_eq!(x, 1);
 }
 
-// Used in a type.
+// 用在类型中。
 macro_rules! Tuple {
     { $A:ty, $B:ty } => { ($A, $B) };
 }
 
 type N2 = Tuple!(i32, i32);
 
-// Used as an item.
+// 用作条目。
 # use std::cell::RefCell;
 thread_local!(static FOO: RefCell<u32> = RefCell::new(1));
 
-// Used as an associated item.
+// 用作关联项。
 macro_rules! const_maker {
     ($t:ty, $v:tt) => { const CONST: $t = $v; };
 }
@@ -98,11 +91,11 @@ trait T {
     const_maker!{i32, 7}
 }
 
-// Macro calls within macros.
+// 宏中的宏调用。
 macro_rules! example {
     () => { println!("Macro call in a macro!") };
 }
-// Outer macro `example` is expanded, then inner macro `println` is expanded.
+// 首先扩展外部宏 `example`，然后扩展内部宏 `println`。
 example!();
 ```
 
