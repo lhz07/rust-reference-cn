@@ -1,5 +1,5 @@
 r[statement]
-# Statements
+# 语句
 
 r[statement.syntax]
 ```grammar,statements
@@ -12,49 +12,49 @@ Statement ->
 ```
 
 r[statement.intro]
-A *statement* is a component of a [block], which is in turn a component of an outer [expression] or [function].
+*语句*是[块][block]的组成部分，而块又是外部[表达式][expression]或[函数][function]的组成部分。
 
 r[statement.kind]
-Rust has two kinds of statement: [declaration statements](#declaration-statements) and [expression statements](#expression-statements).
+Rust 有两种语句：[声明语句](#declaration-statements)和[表达式语句](#expression-statements)。
 
 r[statement.decl]
-## Declaration statements
+## 声明语句
 
-A *declaration statement* is one that introduces one or more *names* into the enclosing statement block.
-The declared names may denote new variables or new [items][item].
+*声明语句*是将一个或多个*名称*引入封闭语句块的语句。
+声明的名称可以表示新变量或新[条目][item]。
 
-The two kinds of declaration statements are item declarations and `let` statements.
+声明语句有两种：条目声明和 `let` 语句。
 
 r[statement.item]
-### Item declarations
+### 条目声明
 
 r[statement.item.intro]
-An *item declaration statement* has a syntactic form identical to an [item declaration][item] within a [module].
+*条目声明语句*的语法形式与[模块][module]内的[条目声明][item]相同。
 
 r[statement.item.scope]
-Declaring an item within a statement block restricts its [scope] to the block containing the statement.
-The item is not given a [canonical path] nor are any sub-items it may declare.
+在语句块内声明条目会将其[作用域][scope]限制为包含该语句的块。
+该条目不会被赋予[规范路径][canonical path]，其声明的任何子条目也不会。
 
 r[statement.item.associated-scope]
-The exception to this is that associated items defined by [implementations] are still accessible in outer scopes as long as the item and, if applicable, trait are accessible.
-It is otherwise identical in meaning to declaring the item inside a module.
+例外的是，只要条目和（如果适用）特征可访问，[实现][implementations]定义的关联项在外部作用域中仍然可访问。
+否则，它在含义上与在模块内声明条目相同。
 
 r[statement.item.outer-generics]
-There is no implicit capture of the containing function's generic parameters, parameters, and local variables.
-For example, `inner` may not access `outer_var`.
+不存在对包含函数的泛型参数、参数和局部变量的隐式捕获。
+例如，`inner` 不能访问 `outer_var`。
 
 ```rust
 fn outer() {
   let outer_var = true;
 
-  fn inner() { /* outer_var is not in scope here */ }
+  fn inner() { /* outer_var 在这里不在作用域内 */ }
 
   inner();
 }
 ```
 
 r[statement.let]
-### `let` statements
+### `let` 语句
 
 r[statement.let.syntax]
 ```grammar,statements
@@ -62,41 +62,41 @@ LetStatement ->
     OuterAttribute* `let` PatternNoTopAlt ( `:` Type )?
     (
           `=` Expression
-        | `=` Expression _except [LazyBooleanExpression] or end with a `}`_ `else` BlockExpression
+        | `=` Expression _除了 [LazyBooleanExpression] 或以 `}` 结尾_ `else` BlockExpression
     )? `;`
 ```
 
 r[statement.let.intro]
-A *`let` statement* introduces a new set of [variables], given by a [pattern].
-The pattern is followed optionally by a type annotation and then either ends, or is followed by an initializer expression plus an optional `else` block.
+*`let` 语句*通过[模式][pattern]引入一组新的[变量][variables]。
+模式后面可选地跟随类型注释，然后要么结束，要么后跟初始化表达式加上可选的 `else` 块。
 
 r[statement.let.inference]
-When no type annotation is given, the compiler will infer the type, or signal an error if insufficient type information is available for definite inference.
+当没有给出类型注释时，编译器将推断类型，或者如果没有足够的类型信息可用于明确推断，则发出错误信号。
 
 r[statement.let.scope]
-Any variables introduced by a variable declaration are visible from the point of declaration until the end of the enclosing block scope, except when they are shadowed by another variable declaration.
+由变量声明引入的任何变量从声明点到封闭块作用域的末尾可见，除非它们被另一个变量声明遮蔽。
 
 r[statement.let.constraint]
-If an `else` block is not present, the pattern must be irrefutable.
-If an `else` block is present, the pattern may be refutable.
+如果 `else` 块不存在，则模式必须是不可反驳的。
+如果 `else` 块存在，则模式可以是可反驳的。
 
 r[statement.let.behavior]
-If the pattern does not match (this requires it to be refutable), the `else` block is executed.
-The `else` block must always diverge (evaluate to the [never type]).
+如果模式不匹配（这要求它是可反驳的），则执行 `else` 块。
+`else` 块必须始终发散（求值为 [never 类型][never type]）。
 
 ```rust
-let (mut v, w) = (vec![1, 2, 3], 42); // The bindings may be mut or const
-let Some(t) = v.pop() else { // Refutable patterns require an else block
-    panic!(); // The else block must diverge
+let (mut v, w) = (vec![1, 2, 3], 42); // 绑定可以是 mut 或 const
+let Some(t) = v.pop() else { // 可反驳的模式需要 else 块
+    panic!(); // else 块必须发散
 };
-let [u, v] = [v[0], v[1]] else { // This pattern is irrefutable, so the compiler
-                                 // will lint as the else block is redundant.
+let [u, v] = [v[0], v[1]] else { // 这个模式是不可反驳的，所以编译器
+                                 // 会发出警告，因为 else 块是多余的。
     panic!();
 };
 ```
 
 r[statement.expr]
-## Expression statements
+## 表达式语句
 
 r[statement.expr.syntax]
 ```grammar,statements
@@ -106,38 +106,38 @@ ExpressionStatement ->
 ```
 
 r[statement.expr.intro]
-An *expression statement* is one that evaluates an [expression] and ignores its result.
-As a rule, an expression statement's purpose is to trigger the effects of evaluating its expression.
+*表达式语句*是求值[表达式][expression]并忽略其结果的语句。
+通常，表达式语句的目的是触发求值其表达式的效果。
 
 r[statement.expr.restriction-semicolon]
-An expression that consists of only a [block expression][block] or control flow expression, if used in a context where a statement is permitted, can omit the trailing semicolon.
-This can cause an ambiguity between it being parsed as a standalone statement and as a part of another expression;
-in this case, it is parsed as a statement.
+仅由[块表达式][block]或控制流表达式组成的表达式，如果在允许语句的上下文中使用，可以省略尾随分号。
+这可能会导致它被解析为独立语句还是另一个表达式的一部分之间的歧义；
+在这种情况下，它被解析为语句。
 
 r[statement.expr.constraint-block]
-The type of [ExpressionWithBlock] expressions when used as statements must be the unit type.
+当用作语句时，[ExpressionWithBlock] 表达式的类型必须是单元类型。
 
 ```rust
 # let mut v = vec![1, 2, 3];
-v.pop();          // Ignore the element returned from pop
+v.pop();          // 忽略从 pop 返回的元素
 if v.is_empty() {
     v.push(5);
 } else {
     v.remove(0);
-}                 // Semicolon can be omitted.
-[1];              // Separate expression statement, not an indexing expression.
+}                 // 可以省略分号。
+[1];              // 独立的表达式语句，不是索引表达式。
 ```
 
-When the trailing semicolon is omitted, the result must be type `()`.
+当省略尾随分号时，结果必须是类型 `()`。
 
 ```rust
-// bad: the block's type is i32, not ()
-// Error: expected `()` because of default return type
+// 错误：块的类型是 i32，不是 ()
+// 错误：由于默认返回类型，期望 `()`
 // if true {
 //   1
 // }
 
-// good: the block's type is i32
+// 正确：块的类型是 i32
 if true {
   1
 } else {
@@ -146,10 +146,10 @@ if true {
 ```
 
 r[statement.attribute]
-## Attributes on statements
+## 语句上的属性
 
-Statements accept [outer attributes].
-The attributes that have meaning on a statement are [`cfg`], and [the lint check attributes].
+语句接受[外部属性][outer attributes]。
+对语句有意义的属性是 [`cfg`] 和[检查属性][the lint check attributes]。
 
 [block]: expressions/block-expr.md
 [expression]: expressions.md
